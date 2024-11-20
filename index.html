@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Estoque</title>
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Corpo da página */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+            font-weight: 600;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Formulário de adicionar produto */
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .form-container button:hover {
+            opacity: 0.8;
+        }
+
+        /* Cores dos botões */
+        .btn-blue {
+            background-color: #007bff;  /* Azul claro */
+            color: white;
+        }
+
+        .btn-blue:hover {
+            background-color: #0056b3;  /* Azul escuro */
+        }
+
+        /* Seção de produtos em estoque */
+        .product-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .product-section h2 {
+            margin-bottom: 20px;
+        }
+
+        /* Tabela de produtos */
+        .product-card {
+            width: 90%;
+            max-width: 400px;
+            margin: 10px auto;
+            padding: 15px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .product-card div {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .product-card div:last-child {
+            border-bottom: none;
+        }
+
+        .product-card h4 {
+            margin-bottom: 5px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .product-card p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .action-buttons {
+            margin-top: 40px; /* Aumentando o espaçamento entre o primeiro card e os botões */
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .action-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .form-container {
+                width: 90%;
+            }
+
+            .product-card {
+                margin: 0 auto;
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Gerenciamento de Estoque</h1>
+
+    <!-- Formulário para adicionar produto -->
+    <div class="form-container">
+        <h2>Adicionar Produto</h2>
+        <form id="addProductForm">
+            <input type="text" id="productName" placeholder="Nome do Produto" required>
+            <input type="number" id="productQuantity" placeholder="Quantidade" required>
+            <input type="number" id="productPrice" placeholder="Preço" required>
+            <button type="submit" class="btn-blue">Adicionar Produto</button>
+        </form>
+    </div>
+
+    <!-- Seção de Produtos em Estoque -->
+    <div class="product-section">
+        <h2>Produtos em Estoque</h2>
+
+        <!-- Botões de Ação -->
+        <div class="action-buttons">
+            <button id="searchButton" class="btn-blue">Buscar Produto</button>
+            <button id="updateButton" class="btn-blue">Atualizar Quantidade</button>
+            <button id="removeButton" class="btn-blue">Remover Produto</button>
+        </div>
+
+        <!-- Cards de Produtos -->
+        <div id="productCards">
+            <!-- Produtos serão inseridos aqui dinamicamente -->
+        </div>
+    </div>
+
+    <script>
+        // Função para adicionar um produto via API
+        document.getElementById('addProductForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const nome = document.getElementById('productName').value;
+            const quantidade = document.getElementById('productQuantity').value;
+            const preco = document.getElementById('productPrice').value;
+
+            fetch('http://localhost:5000/produtos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nome: nome,
+                    quantidade: quantidade,
+                    preco: preco
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Produto adicionado:', data);
+                listarProdutos();  // Atualiza a lista de produtos
+            })
+            .catch(error => console.error('Erro ao adicionar produto:', error));
+        });
+
+        // Função para listar produtos na seção de cards
+        function listarProdutos() {
+            fetch('http://localhost:5000/produtos')
+            .then(response => response.json())
+            .then(data => {
+                const productCardsContainer = document.getElementById('productCards');
+                productCardsContainer.innerHTML = '';  // Limpa os cards antes de adicionar os novos produtos
+
+                data.forEach(produto => {
+                    const productCard = document.createElement('div');
+                    productCard.classList.add('product-card');
+                    productCard.innerHTML = `
+                        <div>
+                            <h4>${produto.nome}</h4>
+                            <p><strong>Quantidade:</strong> ${produto.quantidade}</p>
+                            <p><strong>Preço:</strong> R$ ${produto.preco}</p>
+                        </div>
+                    `;
+                    productCardsContainer.appendChild(productCard);
+                });
+            })
+            .catch(error => console.error('Erro ao listar produtos:', error));
+        }
+
+        // Função para buscar um produto
+        document.getElementById('searchButton').addEventListener('click', function() {
+            const nome = prompt('Digite o nome do produto para buscar:');
+            if (nome) {
+                fetch(`http://localhost:5000/produtos/${nome}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.nome) {
+                        alert(`Produto encontrado: ${data.nome}\nQuantidade: ${data.quantidade}\nPreço: ${data.preco}`);
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => alert('Erro ao buscar produto:', error));
+            }
+        });
+
+        // Função para atualizar a quantidade de um produto
+        document.getElementById('updateButton').addEventListener('click', function() {
+            const nome = prompt('Digite o nome do produto que deseja atualizar:');
+            const quantidade = prompt('Digite a nova quantidade:');
+            if (nome && quantidade) {
+                fetch(`http://localhost:5000/estoque/${nome}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        quantidade: quantidade
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(`Quantidade de ${nome} atualizada com sucesso!`);
+                    listarProdutos();
+                })
+                .catch(error => alert('Erro ao atualizar quantidade:', error));
+            }
+        });
+
+        // Função para remover um produto
+        document.getElementById('removeButton').addEventListener('click', function() {
+            const nome = prompt('Digite o nome do produto que deseja remover:');
+            if (nome) {
+                fetch(`http://localhost:5000/produtos/${nome}`, {
+                    method: 'DELETE',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(`Produto ${nome} removido com sucesso!`);
+                    listarProdutos();  // Atualiza a lista de produtos
+                })
+                .catch(error => alert('Erro ao remover produto:', error));
+            }
+        });
+
+        // Carrega os produtos assim que a página for carregada
+        window.onload = function() {
+            listarProdutos();
+        };
+    </script>
+
+</body>
+</html>
