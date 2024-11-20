@@ -69,15 +69,14 @@ A comunicação entre o front-end (HTML) e os microsserviços é feita via **req
 
     Com as dependências instaladas, inicie o servidor para os microsserviços de Produtos e Estoque:
 
-        Microsserviço de Produtos:
+    Microsserviço de Produtos:
 
     ```bash
     python produtos.py
 
-Microsserviço de Estoque:
+    Microsserviço de Estoque:
 
-```bash
-python estoque.py
+    python estoque.py
 
 Após isso, os servidores estarão rodando nas portas 5000 (para produtos) e 5001 (para estoque), respectivamente.
 
