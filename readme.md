@@ -69,15 +69,15 @@ A comunicação entre o front-end (HTML) e os microsserviços é feita via **req
 
     Com as dependências instaladas, inicie o servidor para os microsserviços de Produtos e Estoque:
 
-    Microsserviço de Produtos:
+        Microsserviço de Produtos:
 
     ```bash
     python produtos.py
 
-    Microsserviço de Estoque:
+Microsserviço de Estoque:
 
-    ```bash
-    python estoque.py
+```bash
+python estoque.py
 
 Após isso, os servidores estarão rodando nas portas 5000 (para produtos) e 5001 (para estoque), respectivamente.
 
@@ -85,9 +85,9 @@ Após isso, os servidores estarão rodando nas portas 5000 (para produtos) e 500
 
     A interface web está na pasta frontend/. Abra o arquivo index.html diretamente no seu navegador ou utilize um servidor web simples, como o Live Server do VSCode, para visualizá-lo. O frontend interage com as APIs nos servidores Flask.
 
-    **Estrutura de Arquivos**
+    **Estrutura de Arquivos:**
 
-        ```bash
+        
         projeto-microsservicos/
         │
         ├── produtos.py          # Microsserviço para gerenciamento de produtos
@@ -103,11 +103,12 @@ Após isso, os servidores estarão rodando nas portas 5000 (para produtos) e 500
 
 ## Produtos
 
-    **GET /produtos: Retorna todos os produtos cadastrados.**
-    **GET /produtos/{nome}: Busca um produto pelo nome.**
-    **POST /produtos: Adiciona um novo produto ao estoque.**
+**GET /produtos: Retorna todos os produtos cadastrados.**
+**GET /produtos/{nome}: Busca um produto pelo nome.**
+**POST /produtos: Adiciona um novo produto ao estoque.**
 
-    **Corpo da requisição:**
+**Corpo da requisição:**
+
         {
          "nome": "Camiseta",
          "quantidade": 10,
@@ -118,15 +119,15 @@ Após isso, os servidores estarão rodando nas portas 5000 (para produtos) e 500
 
 ## Estoque
 
-    PUT /estoque/{nome}: Atualiza a quantidade de um produto.
+PUT /estoque/{nome}: Atualiza a quantidade de um produto.
 
-    Corpo da requisição:
+Corpo da requisição:
 
         {
             "quantidade": 20
         }
 
-### Como Usar a Interface Web
+## Como Usar a Interface Web
 
 Adicionar Produto: Preencha o formulário na parte superior da página com o nome do produto, a quantidade e o preço, e clique no botão "Adicionar Produto".
 
@@ -138,9 +139,9 @@ Atualizar Quantidade: Clique no botão "Atualizar Quantidade", insira o nome do 
 
 Remover Produto: Clique no botão "Remover Produto", insira o nome do produto que deseja excluir.
 
-### Exemplos de Resposta da API
+## Exemplos de Resposta da API
 
-## GET /produtos:
+### GET /produtos:
 
 [
   {
@@ -155,27 +156,27 @@ Remover Produto: Clique no botão "Remover Produto", insira o nome do produto qu
   }
 ]
 
-## POST /produtos: Resposta de sucesso:
+### POST /produtos: Resposta de sucesso:
 
 {
   "message": "Produto adicionado com sucesso!"
 }
 
-## PUT /estoque/{nome}: Resposta de sucesso:
+### PUT /estoque/{nome}: Resposta de sucesso:
 
 {
   "message": "Quantidade atualizada com sucesso!"
 }
 
-## DELETE /produtos/{nome}: Resposta de sucesso:
+### DELETE /produtos/{nome}: Resposta de sucesso:
 
 {
   "message": "Produto removido com sucesso!"
 }
 
-### Contribuições
+## Contribuições
 
-## Se você deseja contribuir para este projeto, sinta-se à vontade para abrir um pull request ou relatar problemas no repositório.
+### Se você deseja contribuir para este projeto, sinta-se à vontade para abrir um pull request ou relatar problemas no repositório.
 
 ### Explicação das seções:
 
